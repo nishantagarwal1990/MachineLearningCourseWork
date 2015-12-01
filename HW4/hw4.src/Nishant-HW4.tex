@@ -1,0 +1,275 @@
+\documentclass[12pt]{exam}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{url}
+\usepackage{amsmath,amsthm,enumitem}
+\usepackage{tikz}
+\usetikzlibrary{fit,calc,arrows,positioning}
+\usepackage{stackengine}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{pgfplots}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepgfplotslibrary{polar}
+\usepgflibrary{shapes.geometric}
+
+\pgfplotsset{my style/.append style={axis x line=middle, axis y line=
+middle, xlabel={$x$}, ylabel={$y$}, axis equal }}
+
+\newcommand{\semester}{Fall 2015}
+\newcommand{\assignmentId}{4}
+\newcommand{\releaseDate}{Nov 3, 2015}
+\newcommand{\dueDate}{Nov 17, 2015}
+
+\newcommand{\bx}{{\bf x}}
+\newcommand{\bz}{{\bf z}}
+\newcommand{\bw}{{\bf w}}
+
+\title{CS 5350/6350: Machine Learining \semester}
+\author{Homework \assignmentId}
+\date{Handed out: \releaseDate\\
+  Due date: \dueDate}
+
+\begin{document}
+\maketitle
+\printanswers
+\section{Warmup: Support Vector Machines}
+\begin{itemize}
+\item[] 1.
+\begin{tikzpicture}
+    \begin{axis}[my style, xtick={-1,0,...,3}, ytick={-1,0,...,3},
+      xmin=-1, xmax=6, ymin=-1, ymax=3]
+      \addplot[mark=*,only marks] coordinates {(3,1)(3,-1)(6,1)(6,-1)};
+      \addplot[mark=o,only marks] coordinates {(1,0)(0,1)(0,-1)(-1,0)};
+      \addplot [domain=-10:10, samples=2] (2,x);
+      \addplot [dashed,domain=-10:10, samples=2] (1,x);
+      \addplot [dashed,domain=-10:10, samples=2] (3,x);
+    \end{axis}
+ \end{tikzpicture}
+\begin{solution}
+$\mathcal{D}_+$ are represented by filled dots and $\mathcal{D}_-$ are represented by empty dots.The optimal hyperplane is represented by the line at $x= 2$. The maximum margin is $1$.\\
+The points which lie on the margin are the support vectors. The points are: 
+$(1,0) ,(3,1)$ and $(3,-1)$.
+
+\end{solution}
+
+\item[] 2.
+\begin{solution}
+The new point $x = [1.8, 1]$ with true label $-1$ will lie on the negative labels side. Hence SVM correctly classifies it.
+\end{solution}
+
+\item[] 3.
+\begin{solution}
+If a vanilla perceptron gives a classifier which achieves $0\%$ error on the training set , we can not guarantee that it will correctly classify the point $x = [1.9999,1]$ with label $-1$. This is because the perceptron may give classifier which linearly separates the training set, but the classifier may not necessarily be $x=2$. We can still get a classifier which linearly separates the training set and and is not $x=2$. For e.g. if we get a classifier:
+$x = c$ where $c$ is constrained by the condition $1 < c < 1.8$. Any of these classifiers will misclassify the given point even after giving $0\%$ error on training set.
+
+Any classifier can be given as perceptron does not have a regularization term to maximize the margin.
+\end{solution}
+\end{itemize}
+
+\section{Kernels and the Perceptron Algorithm}
+\begin{itemize}
+\item[] 1.
+\begin{solution}
+In a $k$-DNF, there are exactly $k$ literals. As we know that a $k$-DNF is a disjunction  of the conjunctions of a set of exact $k$ literals. We know that any disjunction is linearly separable with a unit weight vector. Similary if we take all the conjunctions in the DNF as features for the feature transformation we will get a simple disjunction, that is linearly separable by a unit weight vector.
+\end{solution}
+\item[] 2.
+\begin{solution}
+We are given that $C$ is the set of all conjunctions containing exactly $k$ different literals. We know that for any $\bx_1, \bx_2 \in \{0, 1\}^n$
+$$K(\bx_1, \bx_2) = \phi(\bx_1)^T\phi(\bx_2) = \sum_{c \in C} c(\bx_1)c(\bx_2)$$ 
+The value of conjunctions is given by $c(\bx)$. Therefore, when $c(\bx_1) =1$ and $c(\bx_2) = 1$, only then will they contribute to the value of $K(\bx_1, \bx_2) $ as their product will also give $1$. \\
+We can also say that $c$ is defined as where the value of conjunctions from both $\bx_1$ and $\bx_2$ are true. The number of elements which contribute to $K(\bx_1, \bx_2)$ is defined by $Same(\bx_1,\bx_2)$. We now pick $k$ elements from this set and sum over them to compute the value of $K(\bx_1, \bx_2)$. Hence:
+  \[ K(\bx_1, \bx_2) = \sum_{c \in C} \binom {Same(\bx_1,\bx_2)} {k}  \]
+
+It will take linear time as there are $n$ comparisons at maximum to find the elements in each set which have the same value. Hence this function can be efficiently computed without explicitly computing the values of $\phi(\bx_1)\phi(\bx_2)$.
+\end{solution}
+
+\item[] 3.
+\begin{solution}
+In perceptron algorithm weight vector is updated for every mistake for learning rate $1$, defined by, $w_{t+1} = w_t + y_i x_i$\\
+  
+As the features are transformed, represent the feature transformation of a single example by $\phi(x_i)$. Hence, the above equation can be rewritten as , $w_{t+1} = w_t + y_i\phi(x_i)$\\
+  
+Now taking the initial weight vector as a zero vector, we can perform a manual run on the algorithm.\\
+
+For mistake $1$, $w_1= 0 + y_1 \phi(x_1) $\\
+
+For mistake $2$, we can write,\\
+$w_2= w_1 + y_2 \phi(x_2) = y_1 \phi(x_1)+y_1 \phi(x_1)$  \\
+
+Going on till $t$ mistakes we get,\\
+$w_t= w_{t-1} + y_t \phi(x_t)$\\
+$w_t= \sum_{i}^{t-1} y_i \phi(x_i) + y_t \phi(x_t)$,
+  
+So we can simplify the above equation to:\\ 
+  
+$\bw = \sum_{(\bx_i, y_i) \in M} y_i \, \phi(x_i)$
+\end{solution}
+
+\item[] 4.
+\begin{solution}
+Using the equation from previous solution we can replace $\bw^T$ in the following equation\\
+
+ \[y=sgn\left(\bw^T\phi(\bx)\right)\]
+ \[y=sgn\left(\sum_{(\bx_i, y_i) \in M} y_i \, {\phi(x_i)}^T \phi(x))\right)\]
+ 
+ We know that  $K(\bx_1, \bx_2) = \phi(\bx_1)^T\phi(\bx_2)$. Therefore applying the definition to the equation we get, \\
+  \[y=sgn\left(\sum_{(\bx_i, y_i) \in M} y_i \, K(\bx_i,\bx)\right)\]
+\end{solution}
+
+\item[] 5.
+
+
+\begin{algorithm*}
+\caption{Pseudocode of kernel Perceptron to learn $k$-DNF}
+\begin{algorithmic}
+\STATE Start with $M$ equal to the empty set
+\FOR {every $(x_i,y_i)$ in examples}
+\STATE ${y'}= sgn\left(\sum_{(\bx_j, y_j) \in M} y_j  K(\bx_j,\bx_i)\right)$
+\IF {$y' \neq y_i$}
+\STATE Add $(x_i,y_i)$ to $M$
+\STATE $\bw = \sum_{(\bx_i, y_i) \in M} y_i \phi(x_i)$
+\ENDIF
+\ENDFOR
+\end{algorithmic}
+\end{algorithm*}
+\begin{solution}
+Lets take a set $M$ which will store the examples on which mistakes are made. From above question $3$ and $4$ we can deduce that the similar calculation happens in case of $k$-DNF. The pseudo code is defined above.
+\end{solution}
+\end{itemize}
+
+\section{Experiment: Training an SVM classifier}
+\begin{itemize}
+\item[] 1.
+\begin{solution}
+I have kept the number of outside the code to keep similarity between perceptron and SVM learner using stochastic sub-gradient descent. 
+The values of C are $\{0.0001,0.001,0.01,0.1,1,10.0,20.0\}$ and $\rho_0 = \{0.0001,0.001,0.01,0.1,1\}$. As the data0 was linearly separable i tried out higher values of $C$ to get perfect accuracy.
+\end{solution}
+\item[] 2.
+\begin{solution}
+For data0:\\
+The farthest point from the origin at a distance of 2.68649 is:
+
+1 0:1 1:0.743593 2:0.973706 3:0.923739 4:0.897686 5:0.850652 6:0.986938 7:0.79702 8:0.892886 9:0.222102 10:0.936804\\
+
+For astro/original:\\
+The farthest point from the origin at a distance of 619.214 is:
+
+1 0:1 1:134.611 2:581.073 3:-0.144179 4:166.311
+
+For astro/scaled:\\
+The farthest point from the origin at a distance of 1.91259 is:
+
+-1 0:1 1:-0.980394 2:-0.91751 3:0.932665 4:0.992551
+
+For astro/original.transformed:\\
+The farthest point from the origin at a distance of 362018 is:
+
+1 0:1 1:134.611 2:581.073 3:-0.144179 4:166.311 5:18120.1 6:78218.8 7:-19.4081 8:22387.3 9:337646 10:-83.7788 11:96638.7 12:0.0207877 13:-23.9786 14:27659.3
+
+For astro/scaled.transformed:\\
+The farthest point from the origin at a distance of 3.4682 is:
+
+-1 0:1 1:-0.980394 2:-0.91751 3:0.932665 4:0.992551 5:0.961172 6:0.899521 7:-0.914379 8:-0.973091 9:0.841825 10:-0.855729 11:-0.910675 12:0.869864 13:0.925718 14:0.985157
+
+\end{solution}
+
+\item[] 3.
+\begin{solution}
+For data0:\\
+\begin{center}
+\begin{tabular}{lll} \hline
+\textbf{Initial Rate } & \textbf{C} & \textbf{Average Accuracy}\\ \hline
+0.001&                   20      &                1\\
+0.01  &                  20     &                 0.985\\
+0.1    &                 20    &                  0.97\\
+1       &                20   &                   0.969\\
+0.0001   &               20  &                    0.922
+\end{tabular}
+\end{center}
+Accuracy on training set: 1
+
+Accuracy on test set: 1
+
+
+Margin: 0.0380758\\
+
+\textbf{For astro/original:}\\
+\begin{center}
+\begin{tabular}{lll} \hline
+\textbf{Initial Rate } & \textbf{C} & \textbf{Average Accuracy}\\ \hline
+0.1  &                   1    &                   0.840584\\
+0.001 &                  1   &                    0.838636\\
+1       &                20 &                     0.837662\\
+0.001    &               10&                      0.825974\\
+0.0001    &              1&                       0.819805
+\end{tabular}
+\end{center}
+
+Accuracy on training set: 0.823567
+
+Accuracy on test set: 0.823567
+
+
+Margin: 0.0166075\\
+
+\textbf{For astro/scaled:}\\
+\begin{center}
+\begin{tabular}{lll} \hline
+\textbf{Initial Rate } & \textbf{C} & \textbf{Average Accuracy}\\ \hline
+0.0001 &                 20     &                 0.805195\\
+1       &                20    &                  0.801299\\
+0.01     &               20  &                    0.797403\\
+0.001      &             20 &                     0.79026\\
+0.1         &            20&                      0.771753
+\end{tabular}
+\end{center}
+Accuracy on training set: 0.83943
+
+Accuracy on test set: 0.83943
+
+
+Margin: 0.000963625\\
+
+\textbf{For astro/original.transformed:}\\
+\begin{center}
+\begin{tabular}{lll} \hline
+\textbf{Initial Rate } & \textbf{C} & \textbf{Average Accuracy}\\ \hline
+1 &                      1&                       0.859091\\
+0.0001  &                0.1 &                    0.854221\\
+0.0001 &                 0.01 &                   0.849675\\
+0.0001&                  10    &                 0.848052\\
+0.001&                   0.01   &                 0.838312
+\end{tabular}
+\end{center}
+
+Accuracy on training set: 0.767562
+
+Accuracy on test set: 0.767562
+
+
+Margin: 0.497844\\
+
+\textbf{For astro/scaled.transformed:}\\
+\begin{center}
+\begin{tabular}{lll} \hline
+\textbf{Initial Rate } & \textbf{C} & \textbf{Average Accuracy}\\ \hline
+0.01 &                   20  &                    0.857792\\
+0.001   &                20  &                    0.856494\\
+0.1      &               20    &                  0.843831\\
+0.0001   &               20     &                 0.839935\\
+1        &               20     &                 0.832468
+\end{tabular}
+\end{center}
+
+Accuracy on training set: 0.912269
+
+Accuracy on test set: 0.912269
+
+
+Margin: 8.65407e-05
+\end{solution}
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,78 @@
+\section{The Perceptron Algorithm and its Variants}
+\label{sec:experiments}
+For this question, you will experiment with the Perceptron algorithm
+and some variants on a large collection of data sets.
+
+\subsection*{Data}
+The training and test data sets are available on the assignments page
+of the class website. There are two collections of data, named {\tt
+  data0} and {\tt data1}. Both have files with the following naming
+convention: {\tt trainI.K} and {\tt testI.K}, where K represents the
+number of dimensions/features in each data point. So for example {\tt
+  train0.10} is a training set in {\tt data0} with 11 features (ten
+features plus a constant bias feature) and the corresponding test data
+set is {\tt test0.10}.
+
+One popular format for representing labeled data is the {\tt libSVM}
+format (described below). All the data for this assignment is
+presented in this format. Each row in the file is a single example.
+The format of the each row in the data is
+
+{\tt <label> <index1>:<value1> <index2>:<value2> $\cdots$}
+
+Here {\tt <label>} denotes the label for that example. The rest of the
+elements of the row is a sparse vector denoting the feature vector.
+For example, if the original feature vector is $[0, 0, 1, 2, 0, 3]$,
+this would be represented as {\tt 3:1 4:2 6:3}. That is, only the
+non-zero entries of the feature vector are stored.
+
+\subsection*{Algorithms}
+You will implement two variants of the Perceptron algorithm. Note that
+each variant has different hyper-parameters, as described below.
+
+\begin{itemize}
+\item \textbf{Perceptron}: This is the simple version of Perceptron as
+  described in the class. An update will be performed on an example
+  $(\bx, y)$ if $y(\bw^T \bx)\leq 0$.
+
+  \textbf{Hyper-parameters:} The learning rate r.
+
+  Two things bear additional explanation. First, note that in the
+  formulation above, the bias term $b$ is {\em not} explicitly
+  mentioned. This is because the features in the data folder include a
+  bias feature. (See the class lectures for more information.) Second,
+  if all elements of $\bw$ and the bias term are initialized with
+  zero, then the learning rate will have no effect. To see this,
+  recall the Perceptron update:
+  %
+  \begin{align*} 
+    \bw_{new} \leftarrow \bw_{old} + ry\textbf{x}
+  \end{align*}
+  %
+  Now, if $\textbf{w}$ are initialized with zeroes and a learning rate
+  $r$ is used, then we can show that the final parameters will be
+  equivalent to having a learning rate 1. The final weight vector and
+  the bias term will be scaled by $r$ compared to the unit learning
+  rate case.
+
+  For this assignment, you should initialize the weight vector and the
+  bias randomly and tune the learning rate parameter. We recommend
+  trying small values less than one. (eg. 1, 0.1, 0.01, etc.)
+
+\item \textbf{Margin Perceptron:} This variant of Perceptron will
+  perform an update on an example$(\bx, y)$ if $y(\bw^T \bx)\leq \mu$,
+  where $\mu$ is an additional positive hyper-parameter, specified by
+  the user. Note that because $\mu$ is positive, this algorithm can
+  update the weight vector even when the current weight vector does
+  not make a mistake on the current example.
+
+  \textbf{Hyper-parameters:} Learning rate $r$ and the margin $\mu$.
+  We recommend setting the value of $\mu$ between 0 and 5.0.
+
+\end{itemize}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "hw2"
+%%% End:

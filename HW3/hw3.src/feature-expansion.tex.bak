@@ -1,0 +1,58 @@
+\section{Warm Up: Feature Expansion}
+\label{sec:feature-expansion}
+
+[10 points total] Consider an instance space consisting of points on
+the two dimensional plane $(x_1,x_2)$. Let $\mathcal{C}$ be a concept
+class defined on this instance space. Each function
+$f_r \in \mathcal{C}$ is defined by a radius $r$ as follows:
+\[
+f_r(x_1, x_2) = 
+\begin{cases}
+  +1  & \text{if } x_1^2 +x_2^2 - 2x_1 \leq r^2 \\
+  -1 & \text{else}
+\end{cases}
+\]
+This hypothesis class is definitely not separable in $\mathbb{R}^2$.
+That is, there is no $w_1, w_2$ and $b$ such that $f_r(x_1, x_2) =
+sign(w_1 x_1 + w_2 x_2 + b)$ for any $r$. 
+
+\begin{enumerate}
+\item ~[4 points] Construct a function $\phi(x_1,x_2)$ that maps
+  examples to a new space, such that the positive and negative
+  examples are linearly separable in that space? That is, after the
+  transformation, there is some weight vector $\bw$ and a bias $b$
+  such that $f_r(x_1, x_2) = sign(\bw^T\phi(x_1, x_2) + b)$ for any
+  value of $r$.
+
+  (Note: This new space need not be a two-dimensional space.)
+\begin{solution}
+The function $f_r(x_1, x_2)$ is an equation of a circle centered at $(1,0)$. Hence our radius will be $\sqrt{r^2+1}$. The positive examples are within the circle and negative examples outside the circle for any $r$. This is not linearly separable. If we expand the equation of a circle for any center we can take a new function $\phi(x_1, x_2) = [x_1,x_2,x_1^2,x_2^2]$. In this new space the values are linearly separable for weight vector $\bw = \left[-2,0,1\right]$ and bias $b = -r^2$. $\phi(x_1,x_2) = -sign(w_1 x_1 + w_2 x_2 + w_3 x_1^2 + w_4 x_2^2 + b)$.
+\end{solution}
+\item ~[3 points] If we change the above function to: 
+  \[
+  g_r(x_1,x_2) = 
+  \begin{cases}
+    +1 & \text{if } x_1^2 -x_2^2 \leq r^2 \\
+    -1 & \text{else}
+  \end{cases}
+  \]
+
+  Does your $\phi(x_1,x_2)$ make the above linearly separable?  If so
+  demonstrate how. If not prove that it does not.
+\begin{solution}
+Yes. My $\phi(x_1,x_2)$ makes the above linearly separable. For $\phi(x_1,x_2) = -sign(w_1 x_1 + w_2 x_2 + w_3 x_1^2 + w_4 x_2^2 + b)$ where
+ $w = [0,0,1,-1]$ and $b = -r^2$ the above function is linearly separable.
+\end{solution}
+\item ~[3 points] Does $\phi(x_1,x_2) = [x_1,x_2^2]$ make the function
+  $g_r$ above linearly separable? If so demonstrate how. If not prove
+  that it does not.
+\begin{solution}
+The function $\phi(x_1,x_2) = [x_1,x_2^2]$ does not make the function $g_r$ linearly separable. This is because our function $g_r$ has the equation $x_1^2 - x_2^2 \leq r^2$. We cannot find any weight vector which will give back the original equation on simplification, as we require $x_1^2$ and $x_2^2$ but our new feature transformation has only $x_1$.
+\end{solution}
+\end{enumerate}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "hw3"
+%%% End:

@@ -1,0 +1,57 @@
+\documentclass[12pt, fullpage,letterpaper]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{url}
+\usepackage{amsmath,amsthm,amssymb}
+
+\usepackage{pgfplots}
+\usepgfplotslibrary{polar}
+\usepgflibrary{shapes.geometric}
+\usetikzlibrary{calc}
+
+\pgfplotsset{my style/.append style={axis x line=middle, axis y line=
+middle, xlabel={$x$}, ylabel={$y$}, axis equal }}
+
+\newcommand{\semester}{Fall 2015}
+\newcommand{\assignmentId}{3}
+\newcommand{\releaseDate}{Oct 20, 2015}
+\newcommand{\dueDate}{Nov 3, 2015}
+
+\newcommand{\bx}{{\bf x}}
+\newcommand{\bw}{{\bf w}}
+
+\title{CS 5350/6350: Machine Learining \semester}
+\author{Homework \assignmentId}
+\date{Handed out: \releaseDate\\
+  Due date: \dueDate}
+
+\begin{document}
+\maketitle
+
+
+\input{general-instructions}
+
+\section*{Note}
+Do not just put down an answer. We want an explanation. No points will
+be given for just a statement of the results of a proof. You will be
+graded on your reasoning, not just on your final result. 
+
+Please follow good proof technique; what this means is if you make
+assumptions, state them. If what you do between one step and the next
+is not trivial or obvious, then state how and why you are doing what
+you are doing. A good rule of thumb is if you have to ask yourself
+whether what you're doing is obvious, then it's probably not obvious.
+Try to make the proof clean and easy to follow.
+
+\input{feature-expansion}
+
+\input{pac-learning}
+
+\input{vc-dimension}
+
+
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

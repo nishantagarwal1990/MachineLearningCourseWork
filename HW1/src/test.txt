@@ -1,0 +1,10 @@
+No,Yes,Some,French,Yes
+No,Yes,Full,Thai,No
+No,No,Some,Chinese,Yes
+Yes,Yes,Full,Thai,Yes
+Yes,No,Full,French,No
+No,Yes,Some,Italian,Yes
+No,No,None,Chinese,No
+No,Yes,Some,Thai,Yes
+Yes,No,Full,Chinese,No
+

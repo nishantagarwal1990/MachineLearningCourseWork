@@ -1,0 +1,136 @@
+\subsection*{Experiments}
+
+For all your experiments, you may choose whatever hyper-parameters you
+like, but we suggest that you informally experiment with them before
+submitting the results. (You can use cross-validation to find the
+hyper-parameters as you did in the previous homework. Note that we did
+not partition the data into parts, so you should do that if you want
+to find hyper-parameters using cross-validation.)
+
+\begin{enumerate}
+
+\item ~[Sanity check, 5 points] Run the simple Perceptron algorithm on
+  the data in Table 2 (one pass only, without shuffling) and report
+  the weight vector that the algorithm returns. How many mistakes does
+  it make?
+  
+\item ~[Online Perceptron, 15 points] Choose the 10 dimensional
+  training set ({\tt train0.10}) from the {\tt data0} folder and its
+  corresponding test dataset. Run both the Perceptron algorithm and
+  the margin Perceptron on this dataset for one pass. Report the
+  number of updates (or equivalently mistakes) made by each algorithm
+  and the accuracy of the final weight vector on both the training and
+  the test set. Once again, you will require some playing with the
+  algorithm hyper-parameters. You will see that the hyper-parameters
+  will make a difference and so try out different values.
+
+\item ~[Batch Perceptron on all datasets, 40 points] Now, on each
+  train/test dataset in the {\tt data0} and {\tt data1} folders, run
+  the Perceptron and margin Perceptron algorithms for ten epochs. {\em
+    Do not forget to randomly shuffle the data at the start of each
+    epoch.}
+
+  Record the the number of updates on the train datasets and the
+  accuracy on the test data sets.
+
+  So, for example, use the {\tt data0/train0.10} file to train your
+  Perceptron and test it on {\tt data0/test0.10} and record the number
+  of updates/mistakes and accuracy. Then, repeat this for all other
+  datasets. This constitutes one experiment. Once you have the above
+  data, plot two sets of graphs for each experiment ({\tt data0}/{\tt
+    data1} + Perceptron/margin Perceptron):
+  \begin{center}
+    \begin{tikzpicture}[scale=0.6]
+      % Axis
+      \draw[->,>=latex'] (0,0) -- coordinate (x axis mid) (6.5,0);
+      \draw[->,>=latex'] (0,0) -- coordinate (y axis mid) (0,6.5);
+      % Labels
+      \node[below=0.2] at (x axis mid) {dimension};
+      \node[rotate=90,yshift=10pt] at (y axis mid) {number of
+        updates}; % Or use above alone.
+
+    \end{tikzpicture}
+  %
+    \begin{tikzpicture}[scale=0.6]
+      % Axis
+      \draw[->,>=latex'] (0,0) -- coordinate (x axis mid) (6.5,0);
+      \draw[->,>=latex'] (0,0) -- coordinate (y axis mid) (0,6.5);
+      % Labels
+      \node[below=0.2] at (x axis mid) {dimension};
+      \node[rotate=90,yshift=10pt] at (y axis mid) {test set
+        accuracy}; % Or use above alone.
+
+    \end{tikzpicture}
+  \end{center}
+
+\item\textbf{(For 6350 Students)} [Aggressive Perceptron with Margin,
+  15 points] This algorithm is an extension of the margin Perceptron
+  which performs an aggressive update as follows:
+
+  If $y(\bw^T \bx) \leq \mu,$ then update\\
+  (a) $w_{new} \leftarrow w_{old} + \eta yx$\\
+
+  Unlike the standard Perceptron algorithm, here the learning rate
+  $\eta$ is given by
+
+  \begin{align*}
+    \eta = \frac{\mu - y(\bw^T \bx) }{\bx^T \bx +1}
+  \end{align*}
+
+  As with the margin perceptron, there is an additional positive
+  parameter $\mu$.
+
+  Repeat the experiment 3 with the aggressive update. Note that You
+  should report two sets of results (one for {\tt data0} and one for
+  {\tt data1}).
+
+  \paragraph{Explanation of the update} We call this the aggressive
+  update because the learning rate is derived from the following
+  optimization problem:
+
+  When we see that $y(\bw^T \bx) \leq \mu$, we try to find new values
+  of $\bw$ such that $y(\bw^T \bx) = \mu$ using
+  %
+  \begin{eqnarray*}
+    \min_{\bw_{new}} &     \frac{1}{2} {||\textbf{$\bw_{new}$} - \textbf{$\bw_{old}$}||}^2\\
+    \mbox{such that} & y(\bw^T x) = \mu.
+  \end{eqnarray*}
+  %
+  That is, the goal is to find the smallest change in the weights so
+  that the current example is on the right side of the weight vector.
+
+  By substituting (a) from above into this optimization problem, we
+  will get a single variable optimization problem whose solution gives
+  us the $\eta$ defined above. You can think of this algorithm as
+  trying to tune the weight vector so that the current example is
+  correctly classified right after the update.
+\end{enumerate}
+
+
+\subsection*{Submission Guidelines}
+
+\begin{enumerate}
+\item The report should detail your experiments. For each step,
+  explain in no more than a paragraph or so how your implementation
+  works.
+
+\item {\em Your code should run on the CADE machines}. You should
+  include a shell script, {\tt run.sh}, that will execute your code
+  in the CADE environment. Your code should produce similar output
+  to what you include in your report.
+  
+  You are responsible for ensuring that the grader can execute the
+  code using only the included script. If you are using an
+  esoteric programming language, you should make sure that its
+  runtime is available on CADE.
+
+
+\item Please do not hand in binary files! We will {\em not} grade
+  binary submissions.
+
+\end{enumerate}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "hw2"
+%%% End:

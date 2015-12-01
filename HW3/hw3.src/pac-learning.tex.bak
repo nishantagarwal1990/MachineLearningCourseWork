@@ -1,0 +1,127 @@
+\section{PAC Learning}
+\label{sec:pac-learning}
+\begin{enumerate}
+
+\item ~[15 points] Due to the recent budget cuts the government no
+  longer has any money to pay for humans to monitor the state of
+  nuclear reactors. They have charged you with assessing a Robot's
+  ability to perform this vital task. Every reactor has a different
+  number of binary gauges which indicate whether or not some aspect of
+  the reaction is {\tt normal} or {\tt strange}. The reactor itself
+  can be in one of {\bf five} states -- {\em Normal}, {\em Meltdown},
+  {\em Pre-meltdown}, {\em Abnormally cool} or {\em Off}. Each
+  combination of the binary guage settings indicate one of these five
+  reactor states. We want to know if we can train a robot to identify
+  which gauges and gauge combinations are responsible for each reactor
+  state.
+
+  \begin{enumerate}
+  \item [a)][5 points] Suppose that we have $N$ gauges with which to
+    identify reactor states. How large is the hypothesis space for
+    this task? (You may have to make assumptions about the underlying
+    function space. State your assumptions clearly.)
+\begin{solution}
+We have $N$ gauges for identifying reactor states. A conjunction of  these gauges will tell us the reactor states. The hypothesis space for this task will be $3^n$ as that many conjunctions can be formed using $N$ gauges.
+\end{solution}
+  \item[b)] [10 points] The ex-government employee, whose job the
+    robot is taking, trains the robot at a nuclear reactor where there
+    are 20 gauges by showing the robot a set of gauge positions for
+    the five different reactor states. If the robot wants to learn to
+    recognize the reactor's condition with .1 percent error with
+    greater than 99\% probability how many examples does the robot
+    need to see?
+\begin{solution}
+Using the formula:
+\[ m > \frac{1}{\epsilon}\left(\ln \mid H\mid + \ln \frac{1}{\delta}\right)\]
+
+$\mid H\mid = 3^{20} ,  \delta = 99\%, \epsilon = 0.1\%$ \\
+number of of examples:
+\[ m > \frac{1}{\epsilon}\left(\ln \mid H\mid + \ln \frac{1}{\delta}\right)\]
+\[ m > \frac{100}{0.1}\left(\ln 3^{20} + \ln \frac{100}{1}\right)\]
+\[ m > 1000\left(21.97 + 4.6\right)\]
+\[ m > 26570\]
+
+The $26570$ examples help the robot train on the five reactor states.
+\end{solution}
+  \end{enumerate}
+
+
+\item ~[5 points] Is it possible for a learned hypothesis $h$ to
+   achieve 100\% accuracy with respect to a training set and still
+   have non-zero true error? If so, provide a description of how this
+   is possible. If not, prove that it is impossible.
+\begin{solution}
+Yes. It is possible for a learned hypothesis $h$ to achieve 100\% accuracy with respect to a training set and still have non-zero true error. Lets take an example where my true function is $f(x) = x_2\land x_3 \land x_4$. While training  on the instance space we eliminate the negative examples and learn a hypothesis $h(x) = x_1 \land x_2 \land x_3 \land x_4$ for all positive examples where all relevant features were also positive. In such a case we see that $x_1$ is not present in $f(x)$. Thus in general, we will come across a test example which will be positive for $x_1 = 0$. Hence we will have a non-zero true error.
+\end{solution}
+
+\item ~[25 points] {\bf Learning decision lists:}
+  \input{decision-lists}
+
+\item ~[20 points, {\bf CS 6350 students only}] Let $X$ be an instance
+  space and let $D_1,D_2,...,D_m$ be a sequence of distributions over
+  $X$. Let $\mathcal{H}$ be a finite class of binary classifiers over
+  $X$ and let $f\in \mathcal{H}$. 
+
+  Suppose we have a sample $S$ of $m$ examples, such that the
+  instances are independent but are not identically distributed. The
+  $i^{th}$ instance is sampled from $D_i$ and then $y_i$ is set to be
+  $f(x_i)$. Let $\bar{D}_m$ denote the average, that is,
+  $\bar{D}_m = \frac{1}{m}\sum_{i=1}^m D_i$. 
+
+  Let $h \in \mathcal{H}$ be a classifier that gets zero error on the
+  training set. That is, for every example $x_i \in X$, we have
+  $h(x_i) = f(x_i)$. Show that, for any accuracy parameter
+  $\epsilon \in (0, 1)$, the probability that the expected error of
+  the learned classifier $h$ is greater than $\epsilon$ is no more
+  than $|\mathcal{H}|e^{-\epsilon m}$. That is, show that
+
+  \[\mathbb{P}\left[E_{x \sim \bar{D}_m}\left[h(x) \ne f(x)\right]> \epsilon\right] \leq  |\mathcal{H}|e^{-\epsilon m}\]
+
+  (Hint: You have to use the fact that the arithmetic mean of a set of
+  non-negative numbers greater than or equal to their geometric mean.)
+\begin{solution}
+We know that $\bar{D}_m = \frac{1}{m}\sum_{i=1}^m D_i$. \\
+The expectation of a random variable $X$, where my hypothesis is successful even though it is not equal to the true function, is :
+\begin{eqnarray*}
+E_{X \sim \bar{D}_m}[1_{h(x) \neq f(x)}] &=& \sum_{X}  \bar{D}_m  1_{h(x) \neq f(x)} \\
+&=& \sum_{X} \frac{1}{m} \sum_{i=1}^m D_i 1_{h(x) \neq f(x)}\\
+&=&  \frac{1}{m} \sum_{i=1}^m \sum_{X} D_i 1_{h(x) \neq f(x)}\\
+&=& \frac{1}{m} \sum_{i=1}^m E_{X\sim D_i} [1_{h(x) \neq f(x)}]\\
+\end{eqnarray*}
+
+We have a sample space $S$ such that the instances in the space are independent but not identically distributed. Hence:
+\begin{eqnarray*}
+\mathbb{P}[\forall i, h(x_i) \neq f(x_i)] &=& \mathbb{P}[h(x_1) \neq f(x_1)\ and\ h(x_2) \neq f(x_2) .... h(x_m) \neq f(x_m)]\\
+&=& \prod_{i=1}^m \mathbb{P}[h(x_i) \neq f(x_i)]\\
+\end{eqnarray*}
+We know by the relation of arithmetic and geometric mean:
+\[\left(\frac{1}{m}\sum_{i=1}^m X_i\right)^m \geq \prod_{i=1}^m X_i\]
+Using the above relation we get:
+\[\prod_{i=1}^m \mathbb{P}[h(x_i) \neq f(x_i)] \leq \left(\frac{1}{m}\sum_{i=1}^m \mathbb{P}[h(x_i) \neq f(x_i)]\right)^m\]
+
+Using Bernoulli's trial we know that:
+\[\mathbb{P}(X) = E[X]\]
+Hence:
+\[\left(\frac{1}{m}\sum_{i=1}^m \mathbb{P}[h(x_i) \neq f(x_i)]\right)^m = \left(\frac{1}{m} \sum_{i=1}^m E_{X\sim D_i} [1_{h(x) \neq f(x)}]\right)^m\] 
+
+We know that the expectation of a hypothesis to be successful greater than $\epsilon$ for a single example, the probability is $ 1 - \epsilon$. Hence for all examples is defined by:
+
+\[\mathbb{P}\left[\left(\frac{1}{m} \sum_{i=1}^m E_{X\sim D_i} [1_{h(x) \neq f(x)}]\right)^m > \epsilon\right] = (1-\epsilon)^m\]
+
+As derived in the beginning, we can write:
+\[\mathbb{P}\left[E_{x \sim \bar{D}_m}\left[h(x) \ne f(x)\right] > \epsilon\right] = (1-\epsilon)^m\]
+
+
+
+We know that $1-x \leq e^{-x}$, therefore:
+\[\mathbb{P}\left[E_{x \sim \bar{D}_m}\left[h(x) \ne f(x)\right] > \epsilon\right]  \leq e^{-\epsilon m}\]
+
+Therefore for all $h \in \mathcal{H}$ we get:
+\[\mathbb{P}\left[E_{x \sim \bar{D}_m}\left[h(x) \ne f(x)\right]> \epsilon\right]  \leq |\mathcal{H}|e^{-\epsilon m}\]
+\end{solution}
+\end{enumerate}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "hw3"
+%%% End:

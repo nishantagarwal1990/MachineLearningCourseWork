@@ -1,0 +1,43 @@
+\documentclass[12pt, fullpage,letterpaper]{exam}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{url}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{graphics}
+\usepackage{pgfplots}
+\usepgfplotslibrary{polar}
+\usepgflibrary{shapes.geometric}
+\usetikzlibrary{calc}
+
+\pgfplotsset{my style/.append style={axis x line=middle, axis y line=
+middle, xlabel={$x$}, ylabel={$y$}, axis equal }}
+
+\newcommand{\semester}{Fall 2015}
+\newcommand{\assignmentId}{3}
+\newcommand{\releaseDate}{Oct 20, 2015}
+\newcommand{\dueDate}{Nov 3, 2015}
+
+\newcommand{\bx}{{\bf x}}
+\newcommand{\bw}{{\bf w}}
+
+\title{CS 5350/6350: Machine Learning \semester}
+\author{Homework \assignmentId}
+\date{Handed out: \releaseDate\\
+  Due date: \dueDate}
+\printanswers
+\begin{document}
+\maketitle
+
+
+\input{feature-expansion}
+
+\input{pac-learning}
+
+\input{vc-dimension}
+
+
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

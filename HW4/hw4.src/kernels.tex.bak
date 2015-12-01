@@ -1,0 +1,67 @@
+\section{Kernels and the Perceptron algorithm}
+\label{sec:kernel}
+
+In the class, we saw how the idea of kernels can be applied to
+increase the expressiveness of the SVM classifier. Kernels is more
+broadly applicable than just SVMs. In this question, we will see how
+kernels can be used with the Perceptron algorithm.
+
+Suppose, we wish to learn a $k$-DNF (not necessarily monotone) using a
+kernel version of Perceptron. Recall that a $k$-DNF is a Boolean
+function that is a disjunction of conjunctive clauses, where each
+conjunctive clause has exactly $k$ literals. For example, the
+following Boolean functions are $2$-DNFs:
+\begin{itemize}
+\item $(x_1 \wedge x_2) \vee (\neg x_2 \wedge x_3)$
+\item $(\neg x_1 \wedge x_2) \vee (x_3 \wedge x_4) \vee (\neg x_4 \wedge x_1)$
+\end{itemize}
+
+In order to learn a $k$-DNF, we will define a feature transformation
+$\phi(\bx)$ that maps examples $\bx \in \{0,1\}^n$ to a new space of
+$k$-conjunctions and then define a kernel Perceptron algorithm for
+learning. That is, each element of $\phi(\bx)$ corresponds to the
+value of a different $k$-conjunction and $\phi$ enumerates over all
+$k$-conjunctions. After this transformation, the classification of the
+Perceptron is via the sign of the dot product of the weight vector and
+the example $\bw^T\phi(x)$. The goal is to represent this dot product
+using a kernel $K(w, x)$.
+
+
+\begin{enumerate}
+\item ~[5 points] Show that any $k$-DNF is linearly separable after
+  the feature transformation.
+
+
+\item ~[10 points] Let $C$ be the set of all conjunctions containing
+  exactly $k$ different literals. (Recall that a literal is a Boolean
+  variable or its negation.) For any $\bx_1, \bx_2 \in \{0, 1\}^n$,
+  define
+  $$K(\bx_1, \bx_2) = \phi(\bx_1)^T\phi(\bx_2) = \sum_{c \in C} c(\bx_1)c(\bx_2).$$ 
+
+  Here $c(\bx)$ is the value of a conjunction $c$ using the values in
+  $\bx$. Show that this function can be computed efficiently without
+  explicitly computing the values of $\phi(\bx_1)$ and $\phi(\bx_2)$.
+
+\item ~[5 points] Assume that the initial weight vector for Perceptron
+  is the zero vector. Then, show that
+  $\bw = \sum_{(\bx_i, y_i) \in M} y_i \, \phi(x_i)$. Here
+  $M = \{(\bx_i, y_i)\}$ is the set of examples on which the learning
+  algorithm made mistakes.
+
+\item ~[5 points] Using the fact that the weight vector can be written
+  as in the previous question, write the classification step
+  $y=sgn\left(\bw^T\phi(\bx)\right)$ using the kernel function
+  $K(\bx_1,\bx_2)$ instead of using the explicit feature
+  representations.
+
+\item ~[15 points] Write explicitly the pseudo code for the kernel
+  Perceptron algorithm that uses your kernel to learn a $k$-DNF.
+  (Hint: Instead of storing the weight vector, you will store a list
+  of examples where the algorithm makes mistakes.)
+\end{enumerate}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "hw4"
+%%% End:

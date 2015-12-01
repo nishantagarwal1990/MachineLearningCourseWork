@@ -1,0 +1,37 @@
+\documentclass[12pt, fullpage,letterpaper]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{fit,calc,arrows,positioning}
+\usepackage{stackengine}
+
+
+\newcommand{\semester}{Fall 2015}
+\newcommand{\assignmentId}{4}
+\newcommand{\releaseDate}{Nov 3, 2015}
+\newcommand{\dueDate}{Nov 17, 2015}
+
+\newcommand{\bx}{{\bf x}}
+\newcommand{\bz}{{\bf z}}
+\newcommand{\bw}{{\bf w}}
+
+\title{CS 5350/6350: Machine Learining \semester}
+\author{Homework \assignmentId}
+\date{Handed out: \releaseDate\\
+  Due date: \dueDate}
+
+\begin{document}
+\maketitle
+
+\input{general-instructions}
+\input{svm}
+\input{kernels}
+\input{experiment}
+
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

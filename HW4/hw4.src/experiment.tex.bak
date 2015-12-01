@@ -1,0 +1,133 @@
+\section{Experiment: Training an SVM classifier}
+\label{sec:experiments}
+
+Recall from class that an SVM learns a classifier by minimizing the
+following loss function:
+%
+$$ E(\bw) = \frac{1}{2}\bw^T\bw + C \sum_i \max (0, 1-y_i \bw^T\bx_i)$$
+%
+where $C$ is a hyper-parameter that controls the relative importance
+of the regularization term $\frac{1}{2}\bw^T\bw$ with respect to the error
+term. As always, the inputs $x_i$ are real valued vectors and
+$y_i \in \{-1, +1\}$. This formalism is commonly referred to as L2 regularization and L1 loss.
+
+\subsection*{Stochastic Gradient Descent}
+The concept behind SGD is to do gradient decent, but only calculate
+the gradient using a single example. In practice, it can be helpful to
+shuffle the order of the data for each epoch.
+%
+\begin{enumerate}
+\item Initialize $\bw = \vec{0}$, $t = 0$
+\item for epoch $1 \ldots T$:
+  \begin{enumerate}
+    \item for example $(\bx_i, y_i)$ for every $i$ (random order)
+        \begin{enumerate}
+        \item $r_t$ = Learning rate at $t$
+        \item $\bw = \bw - r_t \nabla E(\bw, \bx_i, y_i)$
+        \item $t = t + 1$
+        \end{enumerate}
+    \end{enumerate}
+\end{enumerate}
+
+Here, the gradient is defined as follows:
+$$ \nabla E(\bw, \bx, y) =
+\begin{cases}
+	\bw - C y x  & \text{if } y \bw^T \bx \leq 1 \\
+	\bw & \text{otherwise}
+\end{cases}
+$$
+(Refer to the lecture slides for the full description of the
+algorithm.)
+
+The learning rate is often stated as just $r$, but in practice it is
+better to scale it down as the algorithm converges. In your
+implementation $r$ will be a function of the initial learning rate,
+$\rho_0$, and the example number, $t$. In the case of the SVM loss
+function, one successful strategy is  to choose $r$ is
+$$ r(t, \rho_0) = \frac{\rho_0}{1 + \rho_0t/C}.$$
+
+Here, $t$ should be initialized to zero at the start and incremented
+for each example. Note that $t$ should not be reset at the start of
+the epoch.
+
+\subsection*{Data}
+
+For this home work you will be working on two data sets.
+\begin{enumerate}
+\item The data files named {\tt train0.10} and {\tt test0.10} from
+  data0 folder present in hw2.
+\item The data set named astro included as part of this assignment.
+  There are two variants of this dataset -- {\tt original} and {\tt
+    scaled}, each with train and test files. The scaled data set is a
+  feature-normalized version of the original dataset.
+\end{enumerate}
+
+This feature extracted data is in the libSVM data format which we used
+in homework-2. Recall from the description from homework 2 that in
+this format, each line is a single training example. The format of the
+each line in the data is
+
+{\tt <label> <index1>:<value1> <index2>:<value2> ...}
+
+Here {\tt <label>} denotes the label for that example. The rest of the
+elements of the row is a sparse vector denoting the feature vector.
+For example, if the original feature vector is $[0, 0, 1, 2, 0, 3]$,
+this would be represented as {\tt 3:1 4:2 6:3}. That is, only the
+non-zero entries of the feature vector are stored.
+
+\subsection*{Experiment and Reporting}
+
+\begin{enumerate}
+\item ~[7 points] Implement the SVM learner using stochastic
+  sub-gradient descent as a training algorithm. In your report,
+  briefly describe any design choices you make in implementing the
+  classifier.
+
+\item ~[3 points] Construct a feature transformation that maps all
+  points from the original space to the space of all products of
+  features. That is, for every pair of original features $x_i$ and
+  $x_j$, you will have feature $x_ix_j$ in the transformed set. (This
+  will include the square terms such as $x_i^2$ as well.) Apply the
+  transformation to the {\tt original} and the {\tt scaled} datasets.
+  So you will have four cases: {\tt original}, {\tt scaled}, {\tt
+    original.transformed}, and {\tt scaled.transformed}.
+
+  Report the distance of the farthest data point from the origin for
+  each of these four datasets.
+
+\item ~[20 points] Run the following experiment for the above 4
+  datasets and also {\tt data0.10}.
+
+  Using the provided features, run 10-fold cross validation to find
+  the best values for the hyper-parameters $\rho_0$ and $C$. Try out
+  all combinations of $\rho_0 \in \{0.001, 0.01, 0.1, 1\}$ and
+  $C \in \{0.001, 0.01, 0.1, 1, 10\}$. Feel free to expand the set of
+  hyperparameters.
+  
+  Show a table including the 5 best parameters with three columns:
+  $\rho_0$, $C$ and the average cross validation accuracy for that
+  choice of hyper-parameters.
+
+  (Since all you care about here is the relative accuracy to other
+  training runs it is not necessary for the weight vector to converge.
+  To make cross validation faster, only run 10 epochs of SGD during
+  cross-validation.)
+
+  
+\item ~[15 points] For each dataset, use the best value of $\rho_0$
+  and $C$ to train a classifier on the entire training set. Run at
+  least 30 epochs of SGD. Report the performance of this classifier on
+  the test set along with the margin of the trained weight vector.
+
+\end{enumerate}
+
+{\bf As mentioned in previous homeworks, you may use any programming
+  language for your implementation. Upload your code along with a
+  script so the TAs can run your solution in the CADE environment}.
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "hw4"
+%%% End:
